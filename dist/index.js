@@ -11,7 +11,18 @@ const routes_1 = __importDefault(require("./startup/routes"));
 const db_1 = require("./startup/db");
 const app = (0, express_1.default)();
 const port = process.env.PORT || 5000;
-app.use((0, cors_1.default)());
+let origin;
+if (process.env.NODE_ENV === "development")
+    origin = ["http://localhost:3000", "http://192.168.31.27:3000"];
+else
+    origin = ["https://arbanpublicschool.vercel.app"];
+app.use((0, cors_1.default)({
+    origin: origin,
+    credentials: true,
+    allowedHeaders: ["Authorization", "authToken", "Content-Type", "authtoken"],
+    exposedHeaders: ["authToken"],
+    methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
+}));
 app.use(express_1.default.json());
 (0, db_1.connectDB)();
 (0, routes_1.default)(app);
