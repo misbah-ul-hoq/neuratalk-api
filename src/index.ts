@@ -7,7 +7,20 @@ import { connectDB } from "./startup/db";
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+let origin;
+if (process.env.NODE_ENV === "development")
+  origin = ["http://localhost:3000", "http://192.168.31.27:3000"];
+else origin = ["https://arbanpublicschool.vercel.app"];
+
+app.use(
+  cors({
+    origin: origin,
+    credentials: true,
+    allowedHeaders: ["Authorization", "authToken", "Content-Type", "authtoken"],
+    exposedHeaders: ["authToken"],
+    methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
+  })
+);
 app.use(express.json());
 connectDB();
 routes(app);
