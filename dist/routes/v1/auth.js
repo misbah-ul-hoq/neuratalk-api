@@ -13,8 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const mailer_1 = require("../../services/mailer");
 const auth = express_1.default.Router();
+const otpCache = {};
 auth.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("signup");
+    const { email, otpFromClient } = req.body;
+    const { email: cacheEmail, otp } = yield (0, mailer_1.sendOTP)(email);
+    otpCache[cacheEmail] = otp;
+    if (otpFromClient && otpFromClient !== otp) {
+        res.status(400).send({ message: "Invalid OTP" });
+    }
+    else if (email in otpCache &&
+        otpFromClient &&
+        otpCache[email] === otpFromClient) {
+        res.send({ message: "SignUp successfull" });
+    }
+    else {
+        res.send({ message: "OTP sent. Please check your email" });
+    }
 }));
 exports.default = auth;
