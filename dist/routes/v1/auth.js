@@ -13,6 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const mailer_1 = require("../../services/mailer");
 const user_1 = require("../../models/user");
 const auth = express_1.default.Router();
@@ -29,7 +32,10 @@ auth.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* (
 }));
 auth.post("/verify-otp", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password, otp } = req.body;
-    console.log(req.body);
+    const userExists = yield user_1.User.findOne({ email });
+    if (userExists) {
+        return res.status(400).send({ message: "User already exists" });
+    }
     if (email in otpCache && otpCache[email] === otp) {
         const user = yield new user_1.User({ name, email, password }).save();
         res.send({ message: "OTP verified", user });
@@ -37,5 +43,21 @@ auth.post("/verify-otp", (req, res) => __awaiter(void 0, void 0, void 0, functio
     else {
         res.status(400).send({ message: "Invalid OTP" });
     }
+}));
+auth.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    let user = yield user_1.User.findOne({ email });
+    if (!user) {
+        return res.status(400).send({ message: "User not found" });
+    }
+    if (user.password !== password) {
+        return res.status(400).send({ message: "Incorrect email or password" });
+    }
+    user = yield user_1.User.findOne({ email }).select("-password");
+    res.send({
+        message: "Login successful",
+        user,
+        authToken: jsonwebtoken_1.default.sign({ _id: user === null || user === void 0 ? void 0 : user._id, email: user === null || user === void 0 ? void 0 : user.email }, process.env.JWT_SECRET),
+    });
 }));
 exports.default = auth;
