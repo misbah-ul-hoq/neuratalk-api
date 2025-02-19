@@ -68,7 +68,7 @@ auth.post("/me", async (req, res) => {
     if (!user) {
       return res.status(400).send({ message: "User not found" });
     }
-    res.send({ message: "User found", user });
+    res.send(user);
   } catch (error) {
     res.status(400).send({ message: "Invalid token" });
   }
