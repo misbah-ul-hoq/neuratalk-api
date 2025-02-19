@@ -60,4 +60,18 @@ auth.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         authToken: jsonwebtoken_1.default.sign({ _id: user === null || user === void 0 ? void 0 : user._id, email: user === null || user === void 0 ? void 0 : user.email }, process.env.JWT_SECRET),
     });
 }));
+auth.post("/me", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { authToken } = req.body;
+    try {
+        const decoded = jsonwebtoken_1.default.verify(authToken, process.env.JWT_SECRET);
+        const user = yield user_1.User.findById(decoded._id).select("-password");
+        if (!user) {
+            return res.status(400).send({ message: "User not found" });
+        }
+        res.send({ message: "User found", user });
+    }
+    catch (error) {
+        res.status(400).send({ message: "Invalid token" });
+    }
+}));
 exports.default = auth;

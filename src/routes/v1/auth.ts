@@ -57,4 +57,21 @@ auth.post("/login", async (req, res) => {
   });
 });
 
+auth.post("/me", async (req, res) => {
+  const { authToken } = req.body;
+  try {
+    const decoded = jwt.verify(
+      authToken,
+      process.env.JWT_SECRET!
+    ) as jwt.JwtPayload;
+    const user = await User.findById(decoded._id).select("-password");
+    if (!user) {
+      return res.status(400).send({ message: "User not found" });
+    }
+    res.send({ message: "User found", user });
+  } catch (error) {
+    res.status(400).send({ message: "Invalid token" });
+  }
+});
+
 export default auth;
