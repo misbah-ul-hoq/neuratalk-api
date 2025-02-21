@@ -10,7 +10,7 @@ const verifyUser = (req: Request, res: Response, next: NextFunction) => {
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    req.user = decoded;
+    // req.user = decoded;
     return next();
   } catch (error) {
     return res.status(401).send({ message: "Unauthorized" });

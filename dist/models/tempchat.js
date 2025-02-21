@@ -33,16 +33,17 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Chat = void 0;
+exports.TempChat = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const mongodb_1 = require("mongodb");
-const chatSchema = new mongoose_1.Schema({
-    user: { type: String, required: true },
-    timestamp: { type: Number, default: Date.now },
-    chats: {
-        _id: mongodb_1.ObjectId,
-        title: String,
-        chat: [{ _id: mongodb_1.ObjectId, prompt: String, response: String }],
+const tempChatSchema = new mongoose_1.Schema({
+    prompt: { type: String, required: true },
+    response: { type: String, required: true },
+    title: { type: String, required: true },
+    timestamp: {
+        type: String,
+        default: `Time:${new Date().toLocaleTimeString()}, Date:${new Date()
+            .toISOString()
+            .slice(0, 10)}`,
     },
 });
-exports.Chat = mongoose_1.default.model("Chat", chatSchema);
+exports.TempChat = mongoose_1.default.model("TempChat", tempChatSchema);

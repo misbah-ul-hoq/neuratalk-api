@@ -2,9 +2,19 @@ import e from "express";
 import dotenv from "dotenv";
 import { Chat } from "../../models/chat";
 import { verifyUser } from "../../middlewares/auth";
+import { getResponseFromPrompt } from "../../utils/getResponseFromPrompt";
+import { TempChat } from "../../models/tempchat";
 dotenv.config();
 
 const chat = e.Router();
+
+chat.post("/temp-chat", async (req, res) => {
+  const { prompt } = req.body;
+  console.log(prompt);
+  const response = await getResponseFromPrompt(prompt);
+  const tempChat = await new TempChat(response).save();
+  res.send(response);
+});
 
 chat.post("/", verifyUser, async (req, res) => {
   const { user, title, prompt, response } = req.body;
