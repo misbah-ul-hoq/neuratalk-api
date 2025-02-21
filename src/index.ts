@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 let origin;
 if (process.env.NODE_ENV === "development")
   origin = ["http://localhost:3000", "http://192.168.31.27:3000"];
-else origin = ["https://arbanpublicschool.vercel.app"];
+else origin = ["https://neuratalk-one.vercel.app"];
 
 app.use(
   cors({
