@@ -10,18 +10,18 @@ const chat = e.Router();
 
 chat.post("/temp-chat", async (req, res) => {
   const { prompt } = req.body;
-  console.log(prompt);
   const response = await getResponseFromPrompt(prompt);
   const tempChat = await new TempChat(response).save();
   res.send(response);
 });
 
 chat.post("/", verifyUser, async (req, res) => {
-  const { user, title, prompt, response } = req.body;
+  const { user, prompt } = req.body;
+  const { title, response } = await getResponseFromPrompt(prompt);
   const chat = await new Chat({
     user,
     title,
-    chats: { title, chat: [{ prompt, response }] },
+    chats: { title, chats: [{ prompt, response }] },
   }).save();
   res.send(chat);
 });

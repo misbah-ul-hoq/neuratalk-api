@@ -49,6 +49,7 @@
     "mongodb": "^6.8.0",
     "mongoose": "^8.8.3",
     "nodemailer": "^6.9.16",
+    "uuid": "^11.1.0",
     "winston": "^3.17.0"
   }
 }
