@@ -15,7 +15,10 @@ let origin;
 if (process.env.NODE_ENV === "development")
     origin = ["http://localhost:3000", "http://192.168.31.27:3000"];
 else
-    origin = ["https://neuratalk-one.vercel.app"];
+    origin = [
+        "https://neuratalk-one.vercel.app",
+        "https://neuratalk.binarysearch.org",
+    ];
 app.use((0, cors_1.default)({
     origin: origin,
     credentials: true,
