@@ -14,26 +14,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const chat_1 = require("../../models/chat");
-const auth_1 = require("../../middlewares/auth");
 const getResponseFromPrompt_1 = require("../../utils/getResponseFromPrompt");
 const tempchat_1 = require("../../models/tempchat");
 dotenv_1.default.config();
 const chat = express_1.default.Router();
 chat.post("/temp-chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { prompt } = req.body;
-    console.log(prompt);
     const response = yield (0, getResponseFromPrompt_1.getResponseFromPrompt)(prompt);
     const tempChat = yield new tempchat_1.TempChat(response).save();
     res.send(response);
 }));
-chat.post("/", auth_1.verifyUser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user, title, prompt, response } = req.body;
-    const chat = yield new chat_1.Chat({
-        user,
-        title,
-        chats: { title, chat: [{ prompt, response }] },
-    }).save();
+chat.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { user, prompt } = req.body;
+    const { title, response } = yield (0, getResponseFromPrompt_1.getResponseFromPrompt)(prompt);
+    // const chat = await new Chat({
+    //   user,
+    //   title,
+    //   chats: { title, chats: [{ prompt, response }] },
+    // }).save();
+    const chat = yield new tempchat_1.TempChat({ user, prompt, title, response }).save();
     res.send(chat);
 }));
 exports.default = chat;

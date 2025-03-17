@@ -8,8 +8,9 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const verifyUser = (req, res, next) => {
-    var _a;
-    const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
+    const token = req.headers.authtoken;
+    console.log(token);
+    console.log(req.headers);
     if (!token) {
         return res.status(401).send({ message: "Unauthorized" });
     }

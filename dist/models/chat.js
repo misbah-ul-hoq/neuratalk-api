@@ -35,14 +35,20 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Chat = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const mongodb_1 = require("mongodb");
+const uuid_1 = require("uuid");
 const chatSchema = new mongoose_1.Schema({
     user: { type: String, required: true },
     timestamp: { type: Number, default: Date.now },
     chats: {
-        _id: mongodb_1.ObjectId,
+        _id: { type: String, default: (0, uuid_1.v4)() },
         title: String,
-        chat: [{ _id: mongodb_1.ObjectId, prompt: String, response: String }],
+        chats: [
+            {
+                _id: { type: String, default: (0, uuid_1.v4)() },
+                prompt: String,
+                response: String,
+            },
+        ],
     },
 });
 exports.Chat = mongoose_1.default.model("Chat", chatSchema);

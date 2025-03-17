@@ -15,14 +15,15 @@ chat.post("/temp-chat", async (req, res) => {
   res.send(response);
 });
 
-chat.post("/", verifyUser, async (req, res) => {
+chat.post("/", async (req, res) => {
   const { user, prompt } = req.body;
   const { title, response } = await getResponseFromPrompt(prompt);
-  const chat = await new Chat({
-    user,
-    title,
-    chats: { title, chats: [{ prompt, response }] },
-  }).save();
+  // const chat = await new Chat({
+  //   user,
+  //   title,
+  //   chats: { title, chats: [{ prompt, response }] },
+  // }).save();
+  const chat = await new TempChat({ user, prompt, title, response }).save();
   res.send(chat);
 });
 
